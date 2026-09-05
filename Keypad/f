@@ -1,1 +1,7 @@
-
+There is a category of keypads available in various sizes known as "matrix keypads." They are called this because they are viewed and utilized as a matrix.
+The number of pins on these keypads is equal to the sum of their rows and columns. For example, a 4x4 keypad with 16 keys can be controlled using 8 pins.
+like other modules in arduino, 
+The reason it is called a "matrix" is that, to use these modules, we first define a matrix to serve as the key map; we then pass this map—along with the specific
+pins being used—when creating the keypad object. Subsequently, when a key is pressed, an index corresponding to the defined matrix dimensions is obtained,
+which effectively represents the index of that specific key within the key map.
+there is a useful library for this keypads call `Keypad.h`<br>
