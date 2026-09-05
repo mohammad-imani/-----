@@ -5,3 +5,4 @@ The reason it is called a "matrix" is that, to use these modules, we first defin
 pins being used—when creating the keypad object. Subsequently, when a key is pressed, an index corresponding to the defined matrix dimensions is obtained,
 which effectively represents the index of that specific key within the key map.
 there is a useful library for this keypads call `Keypad.h`<br>
+### Using Keypad.h
