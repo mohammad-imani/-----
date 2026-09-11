@@ -66,9 +66,107 @@ void loop() {
 ### stage two
 if you check the previous stages code, you will see that with pressing keys, it will print many times in the monitor. 
 
+```cpp
+int row = 4;
+int col = 3;
+
+int rows[4] = {2, 3, 4, 5};
+int cols[3] = {6, 7, 8};
+
+char keymap[4][3] = {{'1','2','3'},
+                     {'4','5','6'},
+                     {'7','8','9'},
+                     {'*','0','#'}};
+
+class key_pad {
+  private:
+    char (*key_map)[3];
+    int* row_pins;
+    int* col_pins;
+    int  row;
+    int  col;
+    char key = '\0';
+    char fkey = '\0';
+    bool pressed = false;
+
+  public:
+    key_pad(char (*km)[3] , int* a , int* b , int c , int d){
+      key_map = km;
+      row_pins = a;
+      col_pins = b;
+      row = c;
+      col = d;
+      }
+    void Begin(){
+      for (int i = 0 ; i<row ; i++){
+        pinMode(row_pins[i],OUTPUT);
+        }
+      delay(15);
+      for (int i = 0 ; i<row ; i++){
+        digitalWrite(row_pins[i],HIGH);
+        }
+      for (int i = 0 ; i<col ; i++){
+         pinMode(col_pins[i],INPUT_PULLUP);
+      }
+      
+      }
+    void set_key(){
+       fkey = '\0';
+      for(int i = 0; i<4; i++){
+    
+         digitalWrite(row_pins[i],LOW);
+       
+    
+         for (int j = 0; j<3; j++){
+           int reading = digitalRead(col_pins[j]);
+      
+            if ((reading == LOW)){
+             fkey = key_map[i][j];
+         
+            }
+      
+          }
+          digitalWrite(row_pins[i],HIGH);
+        }
+        if (fkey != '\0' && !pressed) {
+    key = fkey;       // فقط بار اول ثبت کن
+    pressed = true;
+  }
+  else if (fkey == '\0') {
+    pressed = false;   // کلید ول شد
+  }
+  else {
+    key = '\0';     
+  }
+    }
+
+    char get_key(){
+      delay(10);
+      return key;
+      
+      }
+    
+  };
+
+key_pad mypad(keymap,rows,cols,row,col);
+
+void setup() {
+  Serial.begin(9600);
+  mypad.Begin();
+}
 
 
+void loop() {
+  mypad.set_key();
+  char ne = mypad.get_key();
+  if(ne != '\0'){
+    Serial.println(ne);
+    }
+  
+  }
 
+```
+now its ready to use. not easy like the real keypad library, but the important point is knowing its logic.
 
 
 
