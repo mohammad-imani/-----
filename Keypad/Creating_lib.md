@@ -129,11 +129,11 @@ class key_pad {
           digitalWrite(row_pins[i],HIGH);
         }
         if (fkey != '\0' && !pressed) {
-    key = fkey;       // فقط بار اول ثبت کن
+    key = fkey;       
     pressed = true;
   }
   else if (fkey == '\0') {
-    pressed = false;   // کلید ول شد
+    pressed = false;  
   }
   else {
     key = '\0';     
