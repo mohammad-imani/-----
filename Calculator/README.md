@@ -1,2 +1,0 @@
-## making AVR Calculator
-
