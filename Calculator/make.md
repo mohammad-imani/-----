@@ -157,19 +157,227 @@ void Start(){
   lcd.print("Enter your Num:");
   Number = Get_Number();
   ans = Number;
+while (true){
   lcd.clear();
   lcd.setCursor(0,0);
-  lcd.print(Number);
+  lcd.print(n);
   lcd.setCursor(0,15);
   lcd.print("O");
+  lcd.setCursor(0,1);
+  lcd.print("*)Exit");
   char opr = waitKey();
+  if (opr=='*') {lcd.clear();break;}
   mp(opr);
   lcd.setCursor(0,14);
   lcd.print(oprator);
   lcd.setCursor(0,15);
   lcd.print("N");
+  Number = Get_Number();
+}
+}
 ```
-از اینجا به بعد را میتوانیم دوباره یک عدد دریافت کنیم و محاسبه را انجام دهیم و تمام. اما این کار درست نیست ئ ما برای اینکه بتوانیم روی جوابمان دوباره عملیات انجام بدهیم نیاز داریم که از یک تابع جدا برای محاسبه استفاده کنیم که عدد اول به ان داده شود وعملگر و عدد دوم درون ان دریافت شود و نتیجه در عدد اول ریخته شود و این درون یک حلقه برقرار باشد تا زمانیکه برنامه منتظر دریافت عملگر است ما "." بفرستیم و در اینجا از برنامه خارج شود.
+بهتر است که محاسبات در یک تابع جداگانه انجام شود و ما دو عدد و عملکر را به ان بدهیم تا این کار را انجام دهد.
+```cpp
+void calculate(float a,char b,float c){
+  switch(b){
+    case '+':
+      ans = a + c ;
+    break;
+    case '-':
+      ans = a - c ;
+    break;
+    case '*':
+      ans = a * c ;
+    break;
+    case '/':
+     ans = a / c ;
+    break;
+    case '^':
+      ans = pow(a , c) ;
+    break;
+    }; 
+}
+```
+حالا میتوانیم این تابع را در قبلی فراخوانی کنیم.
+```cpp
+void Start(){
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Enter your Num:");
+  Number = Get_Number();
+  ans = Number;
+while (true){
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print(n);
+  lcd.setCursor(0,15);
+  lcd.print("O");
+  lcd.setCursor(0,1);
+  lcd.print("*)Exit");
+  char opr = waitKey();
+  if (opr=='*') {lcd.clear();break;}
+  mp(opr);
+  lcd.setCursor(0,14);
+  lcd.print(oprator);
+  lcd.setCursor(0,15);
+  lcd.print("N");
+  Number = Get_Number();
+  calculate(ans,oprator,Number);
+}
+}
+```
+و تنیجه نهایی را اگر بخواهیم بنویسیم به شکل زیر خواهد شد . و در ادامه باید به سراغ نوشتن یک تابع راهنما برویم . 
+```cpp
+#include <Wire.h> 
+#include <LiquidCrystal_I2C.h>
+#include <Keypad.h>
+
+const byte ROW = 4;
+const byte COL = 3;
+
+byte ROWS[ROW] = {2, 3, 4, 5}; 
+byte COLS[COL] = {6, 7, 8};      
+
+char keymap[ROW][COL] = {{'1','2','3'},
+                         {'4','5','6'},
+                         {'7','8','9'},
+                         {'.','0','#'}};
 
 
+Keypad pad(makeKeymap(keymap), ROWS, COLS, ROW, COL);
+LiquidCrystal_I2C lcd(0x27,16,2);
 
+byte fullBlock[8] = {
+  B11111, B11111, B11111, B11111,
+  B11111, B11111, B11111, B11111
+};
+void Welcome(){
+  lcd.clear();
+  lcd.setCursor(1,0);
+  lcd.print("AVR Calculator");
+  lcd.setCursor(1,1);
+  lcd.print("1)Guide 2)Start");
+  key = pad.getKey();
+  while (!key){key = pad.getKey();};
+  if (key == '1'){ return Guide();};
+  if (key == '2'){ return Start();};
+  }
+
+char waitKey() {
+  char k = 0;
+  while (!k){ 
+    k = pad.getKey();
+    delay(20);
+  }
+  return k;
+}
+float Get_Number(){
+  String number = "";
+  char n = waitKey();
+  while (n != '#'){
+    number += n;
+    lcd.setCursor(0,1);
+    lcd.print(number);
+    n = waitKey();
+    return number.toFloat();
+    }
+}
+void mp(char op){
+switch(mp){
+  case '1':
+    oprator = '+';
+  break;
+  case '2':
+    oprator = '-';
+  break;
+  case '3':
+    oprator = '*';
+  break;
+  case '4':
+    oprator = '/';
+  break;
+  case '5':
+    oprator = '^';
+  break;
+
+}
+}
+void calculate(float a,char b,float c){
+  switch(b){
+    case '+':
+      ans = a + c ;
+    break;
+    case '-':
+      ans = a - c ;
+    break;
+    case '*':
+      ans = a * c ;
+    break;
+    case '/':
+     ans = a / c ;
+    break;
+    case '^':
+      ans = pow(a , c) ;
+    break;
+    }; 
+}
+void Start(){
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Enter your Num:");
+  Number = Get_Number();
+  ans = Number;
+while (true){
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print(n);
+  lcd.setCursor(0,15);
+  lcd.print("O");
+  lcd.setCursor(0,1);
+  lcd.print("*)Exit");
+  char opr = waitKey();
+  if (opr=='*') {lcd.clear();break;}
+  mp(opr);
+  lcd.setCursor(0,14);
+  lcd.print(oprator);
+  lcd.setCursor(0,15);
+  lcd.print("N");
+  Number = Get_Number();
+  calculate(ans,oprator,Number);
+}
+}
+void setup()
+{
+                   
+  lcd.init();
+  // Print a message to the LCD.
+  lcd.backlight();
+  lcd.createChar(1,fullBlock);
+  lcd.clear();
+  for (int i = 0 ; i < 16 ; i++){
+    lcd.setCursor(i,0);
+    lcd.write(byte(1));
+    lcd.setCursor(15-i,1);
+    lcd.write(byte(1));
+    delay(70);
+    lcd.clear();
+    }
+   for (int i = 0 ; i < 16 ; i++){
+    lcd.setCursor(15-i,0);
+    lcd.write(byte(1));
+    lcd.setCursor(i,1);
+    lcd.write(byte(1));
+    delay(70);
+    lcd.clear();
+    }
+  lcd.clear();
+  lcd.setCursor(1,0);
+  lcd.print("AVR Calculator");
+  lcd.setCursor(4,1);
+  lcd.print("+ - * / ^");
+  delay(1000);
+  lcd.clear(); 
+}
+void loop(){Welcome();}
+```
+در اینجا به عنوان اخرین کار باقی مانده تابع loop  را نیز اضافه کردیم و در ان تابهWelcome را فراخوانی کردیم تا برنامه شروع به کار کند. در ادامه در یک فایل دیگر قدم به قدم به سراغ نوشتن فایل راهنما میرویم .
